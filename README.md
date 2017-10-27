@@ -8,6 +8,7 @@ Right after finishing [Udacity Data Analysis Nanodegree](https://github.com/rach
 
 ## Getting Started
 
+### Overview
 This program will include various machine learning projects. 
 
 * Titanic Survival Exploration (Foundation)
@@ -22,8 +23,17 @@ I will also make some notes, which will all be saved in [Toolkits](https://githu
 
 ### Prerequisites
 
-Most of the projects will use [Python](https://www.python.org). You can download [Anaconda](https://www.continuum.io/downloads), which contains most of the modules you will need.
+These projects requires **Python 3.6** and the following Python modules installed:
 
-## Author
+* [NumPy](http://www.numpy.org/)
+* [Pandas](http://pandas.pydata.org)
+* [matplotlib](http://matplotlib.org/)
+* [scikit-learn](http://scikit-learn.org/stable/)
+* [seaborn](https://seaborn.pydata.org)
 
-* Guanrong Fu
+You will also need to install and run [Jupyter Notebook](http://ipython.org/notebook.html)
+
+If you have not had Python installed yet, it is highly recommended to install the [Anaconda](http://continuum.io/downloads) distribution of Python, which already has the above packages and more included.
+
+If there are additional modules needed for each project, it will be explained in each README.md file.
+
