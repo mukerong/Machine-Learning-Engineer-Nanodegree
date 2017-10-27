@@ -4,8 +4,40 @@
 
 ## Getting Started
 
-This is a machine learning into dataset. You can found the dataset and descriptions [here](https://www.kaggle.com/c/titanic/data). 
+### Pre-requisition 
 
-## Authors
+No additional modules required.
 
-* Guanrong Fu
+### Code
+
+Code and report are provided in the notebook `titanic-survival-exploration.ipynb` notebook file.
+
+## Running
+
+No special instructions.
+
+## Data
+
+The dataset can be found [here](https://www.kaggle.com/c/titanic/data), including:
+
+* training set (train.csv)
+* test set (test.csv)
+
+### Features
+
+* pclass - Ticket class (1 = Upper, 2 = Middle, 3 = Lower)
+* sex - Sex	
+* Age - in years (fractional if less than 1. If the age is estimated, is it in the form of xx.5)
+* sibsp	- # of siblings / spouses aboard the Titanic	
+  * sibling - brother, sister, stepbrother, stepsister
+  * spouses - husband, wife (mistresses and fiancés were ignored)
+* parch	- # of parents / children aboard the Titanic	
+* ticket - Ticket number	
+* fare - Passenger fare	
+* cabin - Cabin number	
+* embarked - Port of Embarkation (C = Cherbourg, Q = Queenstown, S = Southampton)
+
+### Label
+
+* survival - Survival (0 = No, 1 = Yes)
+
