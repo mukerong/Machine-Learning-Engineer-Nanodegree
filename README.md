@@ -37,3 +37,28 @@ If you have not had Python installed yet, it is highly recommended to install th
 
 If there are additional modules needed for each project, it will be explained in each README.md file.
 
+## Running
+
+In a terminal or command window, navigate to the top-level project directory and run one of the following commands:
+
+```bash
+jupyter notebook XXX.ipynb
+```
+
+or 
+
+```bash
+ipython notebook XXX.ipynb
+```
+
+If there are special instructions, they will be provided in the project folder.
+
+## Author
+
+* Guanrong Fu
+
+## Certificate
+
+* TBD
+
+
