@@ -31,7 +31,7 @@ These projects requires **Python 3.6** and the following Python modules installe
 * [scikit-learn](http://scikit-learn.org/stable/)
 * [seaborn](https://seaborn.pydata.org)
 
-You will also need to install and run [Jupyter Notebook](http://ipython.org/notebook.html)
+You will also need to install and run [Jupyter Notebook](http://ipython.org/notebook.html).
 
 If you have not had Python installed yet, it is highly recommended to install the [Anaconda](http://continuum.io/downloads) distribution of Python, which already has the above packages and more included.
 
