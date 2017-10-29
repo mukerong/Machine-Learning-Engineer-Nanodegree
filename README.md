@@ -23,7 +23,7 @@ I will also make some notes, which will all be saved in [Toolkits](https://githu
 
 ### Prerequisites
 
-These projects requires **Python 3.6** and the following Python modules installed:
+These projects requires **Python 2.7** and the following Python modules installed:
 
 * [NumPy](http://www.numpy.org/)
 * [Pandas](http://pandas.pydata.org)
