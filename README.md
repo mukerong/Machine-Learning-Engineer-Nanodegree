@@ -56,6 +56,7 @@ If there are special instructions, they will be provided in the project folder.
 ## Author
 
 * Guanrong Fu
+* Udacity - Provided the template and some source codes. Details can be found [here](https://github.com/udacity/machine-learning)
 
 ## Certificate
 
