@@ -39,6 +39,12 @@ class LearningAgent(Agent):
         # Update epsilon using a decay function of your choice
         # Update additional class parameters as needed
         # If 'testing' is True, set epsilon and alpha to 0
+        if testing:
+            self.epsilon = 0
+            self.alpha = 0
+        else:
+            # default learning
+            self.epsilon = self.epsilon - 0.05
 
         return None
 
@@ -62,7 +68,7 @@ class LearningAgent(Agent):
         # With the hand-engineered features, this learning process gets entirely negated.
 
         # Set 'state' as a tuple of relevant data for the agent
-        state = None
+        state = (waypoint, inputs['light'], inputs['oncoming'], inputs['left'])
 
         return state
 
@@ -75,10 +81,14 @@ class LearningAgent(Agent):
         ## TO DO ##
         ###########
         # Calculate the maximum Q-value of all actions for a given state
+        maxQ = max(self.Q[state].values())
+        maxQ_actions = []
 
-        maxQ = None
+        for action, Q in self.Q[state].values():
+            if Q == maxQ:
+                maxQ_actions.append(action)
 
-        return maxQ
+        return maxQ, maxQ_actions
 
 
     def createQ(self, state):
@@ -92,6 +102,8 @@ class LearningAgent(Agent):
         #   Then, for each action available, set the initial Q-value to 0.0
 
         # if state in Q-table
+        if (self.learning) and (state not in self.Q):
+                self.Q[state] = {'left': 0, 'right': 0, 'forward': 0, None: 0}
 
         return
 
@@ -113,8 +125,12 @@ class LearningAgent(Agent):
         # Otherwise, choose an action with the highest Q-value for the current state
         # Be sure that when choosing an action with highest Q-value that you randomly select between actions that "tie".
 
-        if not self.learning:
+        if not self.learning or random.random <= self.epsilon:
             action = random.choice(self.valid_actions)
+        else:
+            maxQ, maxQ_action = self.get_maxQ(state)
+            action = random.choice(maxQ_action)
+
         return action
 
 
@@ -128,8 +144,10 @@ class LearningAgent(Agent):
         ###########
         # When learning, implement the value iteration update rule
         #   Use only the learning rate 'alpha' (do not use the discount factor 'gamma')
-
-        return None
+        if self.learning:
+            self.Q[state][action] = reward * self.alpha + \
+                                    self.Q[state][action] * (1 - self.alpha)
+        return 
 
 
     def update(self):
@@ -164,7 +182,7 @@ def run():
     #   learning   - set to True to force the driving agent to use Q-learning
     #    * epsilon - continuous value for the exploration factor, default is 1
     #    * alpha   - continuous value for the learning rate, default is 0.5
-    agent = env.create_agent(LearningAgent)
+    agent = env.create_agent(LearningAgent, learning=True)
 
     ##############
     # Follow the driving agent
