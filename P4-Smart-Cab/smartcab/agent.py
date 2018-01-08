@@ -84,7 +84,7 @@ class LearningAgent(Agent):
         maxQ = max(self.Q[state].values())
         maxQ_actions = []
 
-        for action, Q in self.Q[state].values():
+        for action, Q in self.Q[state].items():
             if Q == maxQ:
                 maxQ_actions.append(action)
 
@@ -147,7 +147,7 @@ class LearningAgent(Agent):
         if self.learning:
             self.Q[state][action] = reward * self.alpha + \
                                     self.Q[state][action] * (1 - self.alpha)
-        return 
+        return
 
 
     def update(self):
