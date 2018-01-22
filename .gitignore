@@ -2,3 +2,4 @@
 *.html
 *.gz
 *.ipynb_checkpoints/
+*.p
