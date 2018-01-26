@@ -157,3 +157,12 @@ raw_data = raw_data[['state', 'agi_class', 'num_of_returns', 'num_of_exemptions'
                   'total_salary', 'taxable_interest', 'ordinary_dividend',
                   'qualified_dividend', 'net_capital_gl', 'real_estate',
                   'total_tax', 'prep']]
+
+raw_data['agi_class'] = raw_data['agi_class'].astype('object')
+raw_data[['num_of_exemptions', 'num_of_itemized', 'total_salary',
+          'taxable_interest', 'ordinary_dividend', 'net_capital_gl',
+          'real_estate', 'total_tax', 'prep']] = \
+    raw_data[['num_of_exemptions', 'num_of_itemized', 'total_salary',
+              'taxable_interest', 'ordinary_dividend', 'net_capital_gl',
+              'real_estate', 'total_tax', 'prep']].apply(pd.to_numeric,
+                                                         errors='coerce')
