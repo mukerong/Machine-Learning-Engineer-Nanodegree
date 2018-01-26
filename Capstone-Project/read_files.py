@@ -145,18 +145,17 @@ tax_15.columns = ['state', 'agi_class', 'num_of_returns', 'num_of_exemptions',
                   'total_tax', 'prep']
 tax_15['year'] = 2015
 tax_15['state'] = tax_15['state'].str.upper()
-tax_15.head()
-
 
 
 raw_data = pd.concat([tax_05, tax_06, tax_07, tax_08, tax_09, tax_10, tax_11,
                       tax_12, tax_13, tax_14, tax_15], ignore_index=True)
 
-raw_data = raw_data[['state', 'agi_class', 'num_of_returns', 'num_of_exemptions',
-                  'num_of_dependents', 'num_of_itemized', 'agi',
-                  'total_salary', 'taxable_interest', 'ordinary_dividend',
-                  'qualified_dividend', 'net_capital_gl', 'real_estate',
-                  'total_tax', 'prep']]
+raw_data = raw_data[['year', 'state', 'agi_class', 'num_of_returns',
+                     'num_of_exemptions', 'num_of_dependents',
+                     'num_of_itemized', 'agi', 'total_salary',
+                     'taxable_interest', 'ordinary_dividend',
+                     'qualified_dividend', 'net_capital_gl', 'real_estate',
+                     'total_tax', 'prep']]
 
 raw_data['agi_class'] = raw_data['agi_class'].astype('object')
 raw_data[['num_of_exemptions', 'num_of_itemized', 'total_salary',
