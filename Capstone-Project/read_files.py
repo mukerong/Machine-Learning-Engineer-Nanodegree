@@ -146,7 +146,7 @@ tax_15.columns = ['state', 'agi_class', 'num_of_returns', 'num_of_exemptions',
 tax_15['year'] = 2015
 tax_15['state'] = tax_15['state'].str.upper()
 
-
+# Concat the data together
 raw_data = pd.concat([tax_05, tax_06, tax_07, tax_08, tax_09, tax_10, tax_11,
                       tax_12, tax_13, tax_14, tax_15], ignore_index=True)
 
@@ -166,4 +166,5 @@ raw_data[['num_of_exemptions', 'num_of_itemized', 'total_salary',
               'real_estate', 'total_tax', 'prep']].apply(pd.to_numeric,
                                                          errors='coerce')
 
+# Aggregate the data by state
 agg_state = raw_data.groupby(['year', 'state']).sum()
