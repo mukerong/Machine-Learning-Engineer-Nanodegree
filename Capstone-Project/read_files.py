@@ -165,6 +165,3 @@ raw_data[['num_of_exemptions', 'num_of_itemized', 'total_salary',
               'taxable_interest', 'ordinary_dividend', 'net_capital_gl',
               'real_estate', 'total_tax', 'prep']].apply(pd.to_numeric,
                                                          errors='coerce')
-
-# Aggregate the data by state
-agg_state = raw_data.groupby(['year', 'state']).sum()
