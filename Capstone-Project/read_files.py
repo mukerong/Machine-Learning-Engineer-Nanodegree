@@ -157,7 +157,7 @@ raw_data = raw_data[['year', 'state', 'agi_class', 'num_of_returns',
                      'qualified_dividend', 'net_capital_gl', 'real_estate',
                      'total_tax', 'prep']]
 
-raw_data['agi_class'] = raw_data['agi_class'].astype('object')
+raw_data['agi_class'] = raw_data['agi_class'].astype('int64')
 raw_data[['num_of_exemptions', 'num_of_itemized', 'total_salary',
           'taxable_interest', 'ordinary_dividend', 'net_capital_gl',
           'real_estate', 'total_tax', 'prep']] = \
