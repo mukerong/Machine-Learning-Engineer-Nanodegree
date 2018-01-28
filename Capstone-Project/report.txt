@@ -16,43 +16,116 @@ As discussed above, it is hard for each individual to understand how much tax th
 
 
 ### Metrics
-There are many simple free models online, such as [smart assets]( https://smartasset.com/taxes/income-taxes), that can be used as a benchmark. However, since similar models only take salary into account, the amount my model calculated could be different from them. We can use the real data from IRS to test the free model online and my model. The less difference between calculated amount and the real amount, the better the model is. This is more a regression model other than a classification model, so the percentage of differences can be a good measure.
+We can use the real data from IRS to test the free model online and my model. The less difference between calculated amount and the real amount, the better the model is. This is more a regression model other than a classification model, so the percentage of differences can be a good measure.
 
 ## II. Analysis
 
 ### Data Exploration
-In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
-- _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
-- _If a dataset is present for this problem, are statistics about the dataset calculated and reported? Have any relevant results from this calculation been discussed?_
-- _If a dataset is **not** present for this problem, has discussion been made about the input space or input data for your problem?_
-- _Are there any abnormalities or characteristics about the input space or dataset that need to be addressed? (categorical variables, missing values, outliers, etc.)_
+
+The dataset can be found in [Kaggle](https://www.kaggle.com/irs/individual-income-tax-statistics/data) or [IRS](https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi). It is saved separately as csv files for analysis. The detail information about column name and explanation can be found in "field_definitions.csv" file. Detail information can also be found in [IRS](https://www.irs.gov/statistics/soi-tax-stats-individual-income-tax-statistics-zip-code-data-soi). The original dataset is not consistent each year, so I will only use the following columns for this analysis. I have manipulate them to make it easiler to understand. The number in the original dataset is the total amount per zipcode.
+
+* state - 2 letter state abbreviation
+* agi_class
+* num_of_returns - number of returns
+* num_of_exemptions - number total exemptions
+* num_of_dependents - number of total dependents
+* num_of_itemized - total number of returns with itemized deduction
+* agi - AGI
+* total_salary - total amount of salaries & wages
+* taxable_interest - total amount of taxable interest
+* ordinary_dividend - total amount of ordinary dividend
+* net_capital_gl - net amount of capital gain/loss
+* total_tax - Total income tax amount
+* prep - Number of returns using a Paid Preparer
+
+AGI_Stub information shows below:
+
+* 1 = \$1 under \$25,000 
+* 2 = \$25,000 under \$50,000 
+* 3 = \$50,000 under \$75,000 
+* 4 = \$75,000 under \$100,000 
+* 5 = \$100,000 under \$200,000 
+* 6 = \$200,000 or more
+
+After concatenate the 10 year tax data, there are 1,953,802 rows in total with 16 total variables.
 
 ### Exploratory Visualization
-In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
-- _Have you visualized a relevant characteristic or feature about the dataset or input data?_
-- _Is the visualization thoroughly analyzed and discussed?_
-- _If a plot is provided, are the axes, title, and datum clearly defined?_
+
+![Total Data Collections 2005-2015](data-collection.png)
+
+![Total Number of Returns 2005-2015](total-returns.png)
+
+Although the total amount of returns seems right, the data collected 2009 is much less than the other years. After reading through the documents, I did not find any reasons why it is significantly less than the other years. Since there is no way to fix it, the plot with average number will not be appropriate. 2009 will have higher average value since it has less data amount in total. The future plots will focus on total amount.
+
+Put the 2009 issue aside, the total number of returns jumped almost twice from 2008 to 2009. Since there is no documents in IRS explained the possible reasons, I would assume this is because of the financial crisis. More people are filing returns to get tax refund or figuring out their situations because of the financial crisis. After 2009, the total amount increased slightly each year.
+
+![Total AGI 2005-2015](total-agi.png)
+
+![Total AGI 2009-2015](total-agi-2009-2015.png)
+
+AGI, stands adjust gross income, is the base amount to calculate the tax amount for each return. It is the total income of a return with some expenses. It is supposed to be similar each year for the past 10 years. Other than the financial crisis in 2008-2011, there was no major events that can significantly influence the AGI of each return in US. However, the graph shows a very high amount in 2007. It is so high that we cannot even see the amount in the other years. This is very unreasonable. After closely looking at the data from 2009 to 2015, the amount is more consistent and more reasonable.
+
+![Total Tax 2005-2015](total-tax.png)
+
+![Total Tax 2009-2015](total-tax-2009-2015.png)
+
+Similar to AGI, 2007 has much higher total tax amount, which is consistent with AGI. However, 2006 also has a very high total tax amount, which is inconsistent with AGI shown above. 2009-2015 amount is more reasonable.
+
+The above analysis shows some issues with original dataset. Data is not well collected in 2009. The total amount of data in 2009 is significantly less than that of the other years. 2005 to 2008 data is not consistent with the other year, they has unreasonable higher amount than the other years.
+Since the goal of the model is to predict the tax due in current year and in the future, the chaos in the 2005-2008 data could do more harm than good. I will use both the whole dataset and the 2009 (or 2010 since 2009 doesn't have enough data) to 2015 data to train the model separately to see which one is better.
+
+
+![Correlation between Each Variable 2005-2015](corr-2005-2015.png)
+
+![Correlation between Each Variable 2009-2015](corr-2009-2015.png)
+
+![Total Salary vs. Total Tax](total_salary-vs-total_tax.png)
+
+![Total Salary vs. AGI](total_salary-vs-agi.png)
+
+![Total Salary vs. Capital Gain](total_salary-vs-capital.png)
+
+Although we see there are some inconsistency of the data in each year, the pattern is very similar. The total tax has a strong positive relationship with total salary amount. Surprisedly, it doesn't have a strong relationship with AGI amount.
+
+There are certain amount of people have strong positive relationship between their total salary and their AGI, while the other doesn't have any relationship at all. This might because of alimony or tuition.
+
+Total salary and net capital gain&loss doesn't have a strong relationship. People with higher salary doesn't have higher investment than others with lower salary. 
 
 ### Algorithms and Techniques
-In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
-- _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
-- _Are the techniques to be used thoroughly discussed and justified?_
-- _Is it made clear how the input data or datasets will be handled by the algorithms and techniques chosen?_
+This is a regression problem. Therefore, I will use algorithms can predict continuous amount. I plan to use the following algorithms:
+
+* Linear Regression
+* Decision Tree Regression Model
+* KNN
+* MLP Regression
+
+The variable in the dataset can be easily included in these model, which can then predict the final result.
 
 ### Benchmark
-In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
-- _Has some result or value been provided that acts as a benchmark for measuring performance?_
-- _Is it clear how this result or value was obtained (whether by data or by hypothesis)?_
+There are many simple free models online, such as [smart assets]( https://smartasset.com/taxes/income-taxes), that can be used as a benchmark. However, since similar models only take salary into account, the amount my model calculated could be different from them. In this case, we can use the data from the historical data and compare again the real amount. The accuracy of my model will be the percentage difference from the real amount. 
 
 
 ## III. Methodology
 _(approx. 3-5 pages)_
 
 ### Data Preprocessing
-In this section, all of your preprocessing steps will need to be clearly documented, if any were necessary. From the previous section, any of the abnormalities or characteristics that you identified about the dataset will be addressed and corrected here. Questions to ask yourself when writing this section:
-- _If the algorithms chosen require preprocessing steps like feature selection or feature transformations, have they been properly documented?_
-- _Based on the **Data Exploration** section, if there were abnormalities or characteristics that needed to be addressed, have they been properly corrected?_
-- _If no preprocessing is needed, has it been made clear why?_
+
+To train the model that can predict the final tax amount, I do not need the all the variables. For example, total number of returns per year is irrelevant for the model. I will use the following steps to clean the data:
+
+* Deal with missing values and outliers
+* Deal with categorical variables
+* Scale the data to make them under same range.
+* Manually select the variables based on my domain knowledge
+
+![Missing Values](missing-value.png)
+
+![Dividend vs. Qualified Dividend](dividend-vs.qualified_dividend.png)
+
+There are a lot of missing values under qualified_dividend and real_estate. As shown in previous visualization, qualified dividend and ordinary dividend are strongly related with each other. Therefore, to deal with missing values, and to deal with potential collinearity issues, I will drop qualified_dividend variable.
+
+We miss around a third of real estate information and a little of other variables. I will fill in the based on the rest of the values.
+
+Total_tax is the target variable, and only a few of them are missing. I will directly drop the missing values.
 
 ### Implementation
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
