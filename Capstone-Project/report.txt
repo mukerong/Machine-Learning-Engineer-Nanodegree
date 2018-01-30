@@ -110,6 +110,8 @@ _(approx. 3-5 pages)_
 
 ### Data Preprocessing
 
+#### Missing Value & Outliers
+
 To train the model that can predict the final tax amount, I do not need the all the variables. For example, total number of returns per year is irrelevant for the model. I will use the following steps to clean the data:
 
 * Deal with missing values and outliers
@@ -123,11 +125,30 @@ To train the model that can predict the final tax amount, I do not need the all 
 
 There are a lot of missing values under qualified_dividend and real_estate. As shown in previous visualization, qualified dividend and ordinary dividend are strongly related with each other. Therefore, to deal with missing values, and to deal with potential collinearity issues, I will drop qualified_dividend variable.
 
-We miss around a third of real estate information and a little of other variables. I will fill in the based on the rest of the values.
+We miss around a third of real estate information and a little of other variables. I will fill in the based on the rest of the values. Based on the plot below, the average real estate tax amount for each agi class is different, and there are some outliers as well. Therefore, to make it more accurate, I will fill in the missing value based on the agi class using median, which is not influenced by outliers.
 
-Total_tax is the target variable, and only a few of them are missing. I will directly drop the missing values.
+![AGI Class & Real Estate Tax](agi_class-vs-real_estate.png)
+
+Total_tax is the target variable, and only a few of them are missing. I will directly drop the missing values to make it more accurate.
+
 
 ### Implementation
+
+#### Feature Selection
+
+I will not use any algorithms for the feature selection in this model. My final goal is to get a model that can predict individual tax amount based on several amount people input. Therefore, I will manually choose the variables I want people to input based on my domain knowledge. I will choose the following variables:
+
+* state
+* number of dependents
+* total salary
+* taxable interest
+* ordinary dividend
+* net capital gain/loss
+* real estate tax
+* total tax
+
+These variables are very easy to get, so people will not have any issues inputting these number to predict their tax. Since state is a categorical variable, which cannot be used directly by machine learning algorithms, I will use `pd.get_dummies` to change it to numerical variable.
+
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
 - _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
 - _Were there any complications with the original metrics or techniques that required changing prior to acquiring a solution?_
