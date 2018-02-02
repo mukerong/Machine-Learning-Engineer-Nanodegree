@@ -205,7 +205,7 @@ KNN acted weird in this dataset. It runs for 5 hours and cannot return a single 
 ### Model Evaluation and Validation
 The final model is the random forest model, with 2 minimum sample split and 2 minimum sample leafs. The final explained variance score is 0.89. I choose it because it has the highest score. Compared with the un-tuned decision tree, which has score of 0.75, and the tuned decision tree with score of 0.84, random forest achieves the best result. 
 
-The model has been trained through cross-validation. Each time, the training and testing sets are different. To verify the stability of my model, I used 'cross_val_score' to cross validate the final score. 
+The model has been trained through cross-validation. Each time, the training and testing sets are different. To verify the stability of my model, I used 'cross_val_score' to cross validate the final score. The average score is 0.86 with standard deviation of 0.008. I think the model is very stable.
 
 ### Justification
 I have one benchmark for this model - the simple linear regression I trained at the beginning of my project. Since the simple linear regression model is not as accurate as the random forest one based on the metrics score, the tuned random forest model is better.
