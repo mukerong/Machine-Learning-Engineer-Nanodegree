@@ -14,9 +14,11 @@ US has a very complicated tax system that not everyone has time to fully underst
 ### Problem Statement
 As discussed above, it is hard for each individual to understand how much tax they need to pay each year. People are vulnerable if they do not know if they need to pay an estimate tax or if they have paid the right amount. How to avoid these situations? The potential solution is to build up a model to estimate how much tax they should pay. In this way, there will be a benchmark for people to compare to so that they know if there are abnormal amount caused by errors or other factors.
 
-
 ### Metrics
-I will use the `explained_variance_score` from sklearn as a metrics to evaluate my model. It computes the emplaned variance regression score, which measures the proportion the model could predict. The higher the score, the accurate the model will be.
+This is a regression problem, which means the normal accurate score cannot be a good measure. I want to measure how close my prediction is compared to the real value. There are many good measures, including 'mean absolute error'. I chose ‘explaned_variance_score’ . It computes the explained variance regression score, which measures the proportion of the variance the dependent variable that is predictable from the independent variable. The higher the score, the accurate the model will be. The maximum score is 1. To maximum the score, the algorithm will try to explain as much information as possible, and the final model will be more accurate. Here is he formula of this measure:
+
+![](metrics.png)
+
 
 ## II. Analysis
 
@@ -47,7 +49,21 @@ AGI_Stub information shows below:
 * 5 = \$100,000 under \$200,000 
 * 6 = \$200,000 or more
 
-After concatenate the 10 year tax data, there are 1,953,802 rows in total with 16 total variables.
+![sample data](sample-data.png)
+
+After concatenate the 10 year tax data, there are 1,953,802 rows in total with 16 total variables. Here are some descriptive statistics of the features:
+
+Stats | AGI | Total Salary | Total Tax
+--- | --- | --- 
+mean | 4.414340e+06 | 7.192329e+06 | 2.601555e+05
+std | 4.605642e+07 | 4.617545e+07 | 6.510224e+06
+min | -5.442273e+06 | -8.545497e+06 | -2.309389e+06
+25% | 1.444000e+03 | 4.790000e+02 | 3.000000e+01
+50% | 1.047600e+04 | 9.094500e+03 | 3.270000e+02
+75% | 7.353475e+04 | 1.436490e+05 | 3.312250e+03
+max | 1.516317e+10 | 1.067744e+10 | 3.138205e+09
+
+We can see the data is widely spread, which will be explored more later through visualization.
 
 ### Exploratory Visualization
 
@@ -92,25 +108,29 @@ There are certain amount of people have strong positive relationship between the
 Total salary and net capital gain&loss doesn't have a strong relationship. People with higher salary doesn't have higher investment than others with lower salary. 
 
 ### Algorithms and Techniques
-This is a regression problem. Therefore, I will use algorithms can predict continuous amount. I plan to use the following algorithms:
+This is a regression problem. Therefore, I will use algorithms can predict continuous amount. The following models are good regression model, and they do not require hours to train:
 
-* Linear Regression
-* Decision Tree Regression Model
-* Random Forest
+#### Linear Regression
+Linear regression is a linear approach for modeling the relationship between a scalar target variable and some explanatory variables. It estimated the parameters of a linear functions based on the original data, and tried to minimize the differences between the real value and the predicted value.
+
+#### Decision Tree Regression Model
+Decision tree is a tree-like model that has a lot of 'if-then' to predict the final value. If the target variables are continuous values, decision tree can be used to fit a sine curve with addition noisy observation. It learns local linear regression approximating the sine curve. It tries to maximum information gain. 
+
+#### Random Forest
+
+Random forest is an ensemble learning method for classification and regression. It is a combination of many small decision trees. The basis is similar to decision tree, which is to maximum information gain. Random forest can generate better results since it correct the issues of overfitting of decision tree. It is the combination of many decision trees. Each decision tree will make a vote of what the final result should be. Result with more votes will be returned.
 
 The variable in the dataset can be easily included in these model, which can then predict the final result.
 
 ### Benchmark
-There are many simple free models online, such as [smart assets]( https://smartasset.com/taxes/income-taxes), that can be used as a benchmark. However, since similar models only take salary into account, the amount my model calculated could be different from them. In this case, we can use the data from the historical data and compare again the real amount. The accuracy of my model will be the percentage difference from the real amount. 
-
+I will train a simple linear regression model without any tuning as a benchmark model. The detailed information about this benchmark model will be discussed more in the metrics section below.
 
 ## III. Methodology
-_(approx. 3-5 pages)_
 
 ### Data Preprocessing
+There is nothing too surprised in this step.We need to deal with missing values and outliers as we normally do with other datasets. However, we need to be very careful about outliers. We cannot drop them simply because some data points look "weird". There are a lot of stories behind the tax returns, we need to retain as much information as possible for the model.
 
 #### Missing Value & Outliers
-
 To train the model that can predict the final tax amount, I do not need the all the variables. For example, total number of returns per year is irrelevant for the model. I will use the following steps to clean the data:
 
 * Deal with missing values and outliers
@@ -132,6 +152,9 @@ Total_tax is the target variable, and only a few of them are missing. I will dir
 
 
 ### Implementation
+This model is different from other machine learning models because we know what we want the user to input. Therefore, we will not use any techniques, such as select K-best features, to select the features. We will manually select the features we want the model to use, so non-tech people can play around with the model to predict their individual tax.
+
+Since the scaling of each variable is different, we also need to use feature scaling.
 
 #### Feature Selection
 
@@ -156,7 +179,7 @@ Since the range of each variable is different, for example, number of dependents
 
 #### Linear Regression
 
-I want to use linear regression as a benchmark or a base model. There are not many parameters can be tuned for linear regression model. The final score is 0.757.
+I want to use linear regression as a benchmark or a base model. There are not many parameters can be tuned for linear regression model. The final score is 0.75.
 
 #### Decision Tree
 I trained a simple decision tree model without tuning parameters and cross validation. The score is 0.75. Later, I applied cross-validation technique here to make the final model more accurate. I tuned several parameters:
@@ -180,11 +203,12 @@ KNN acted weird in this dataset. It runs for 5 hours and cannot return a single 
 ## IV. Results
 
 ### Model Evaluation and Validation
-The final model is the random forest model, with 2 minimum sample split and 2 minimum sample leafs. The final explained variance score is 0.89. I choose it because it has the highest score. I am happy with this final model for now considering the time I spent on training. I played around with this model using my own tax information, and I think the result it returned meets my expectation. Some of my colleagues and friends also tested it, and it is more accurate than the free tools online. It cannot be used to determine the final tax payment, but it can provide a more accurate results than online tools we can find.
+The final model is the random forest model, with 2 minimum sample split and 2 minimum sample leafs. The final explained variance score is 0.89. I choose it because it has the highest score. Compared with the un-tuned decision tree, which has score of 0.75, and the tuned decision tree with score of 0.84, random forest achieves the best result. 
+
+The model has been trained through cross-validation. Each time, the training and testing sets are different. To verify the stability of my model, I used 'cross_val_score' to cross validate the final score. 
 
 ### Justification
-I have two benchmarks for this model. The free online tools discussed above, and the simple linear regression I trained at the beginning of my project. It is hard to test a lot of data with the online tools, so I spot check some of them. If the person only had salaries, the online version is as accurate as my model. However, if the person's income was more complex, the online model cannot be trusted, but my model could. Also, the simple linear regression model is not as accurate as the random forest one.
-
+I have one benchmark for this model - the simple linear regression I trained at the beginning of my project. Since the simple linear regression model is not as accurate as the random forest one based on the metrics score, the tuned random forest model is better.
 
 ## V. Conclusion
 
