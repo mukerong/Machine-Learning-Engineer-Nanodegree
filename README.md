@@ -60,6 +60,4 @@ If there are special instructions, they will be provided in the project folder.
 
 ## Certificate
 
-![Machine Learning Nanodegree Certificate](Udacity-MLND/MLND-Certificate.pdf)
-
-
+![Machine Learning Nanodegree](https://github.com/rachelfu/Udacity-MLND/MLND-Certificate.pdf)
